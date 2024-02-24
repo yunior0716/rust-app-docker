@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  rustapp:
+    container_name: rustapp
+    image: rustapp-deliodiaz
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        DATABASE_URL: postgres://deliodiaz:2180335@db:5432/rustapp-db
+    ports:
+      - '6001:6001'
+    depends_on:
+      - db
+
+  db:
+    container_name: db
+    image: 'postgres:12'
+    environment:
+      - POSTGRES_USER=deliodiaz
+      - POSTGRES_PASSWORD=2180335
+      - POSTGRES_DB=rustapp-db
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata: {}
