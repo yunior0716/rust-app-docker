@@ -1,18 +1,25 @@
 ---
-- name: Desplegar y actualizar la app
+- name: Deploy and Update app
   hosts: all
   become: true
-  
+
   tasks:
-    - name: Clonar repositorio
+    - name: Clone repository
       git:
         repo: https://github.com/yunior0716/rust-app-docker.git
         dest: /home/deliodiaz/rustapp-docker
+      register: git_clone
 
-    - name: Build and Start Docker container
+    - name: Stop and Build container
       become: true
       shell: |
         cd /home/deliodiaz/rustapp-docker
         docker-compose down
         docker-compose build
+      when: git_clone.changed
+
+    - name: Start Docker container
+      become: true
+      shell: |
+        cd /home/deliodiaz/rustapp-docker
         docker-compose up -d
